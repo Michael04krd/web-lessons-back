@@ -1,0 +1,297 @@
+/* Новые базовые стили */
+body {
+    font-family: 'Montserrat', 'Arial', sans-serif;
+    background: linear-gradient(145deg, #0f0c29, #302b63, #24243e);
+    color: #f8f9fa;
+    line-height: 1.7;
+    padding: 15px;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    min-height: 100vh;
+}
+
+/* Полная переработка формы */
+form {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 35px;
+    border-radius: 15px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.36);
+    width: 100%;
+    max-width: 580px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+h1 {
+    color: #64ffda;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: 500;
+    font-size: 2.4rem;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #64ffda, transparent);
+}
+
+/* Стили полей ввода - полностью переработаны */
+label {
+    display: block;
+    margin-bottom: 10px;
+    color: #adb5bd;
+    font-weight: 400;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    padding: 14px 18px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    color: #e9ecef;
+    font-size: 1rem;
+    transition: all 0.25s cubic-bezier(0.645, 0.045, 0.355, 1);
+    box-sizing: border-box;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #64ffda;
+    box-shadow: 0 0 0 3px rgba(100, 255, 218, 0.15);
+    background: rgba(255, 255, 255, 0.07);
+}
+
+/* Переработанные поля даты */
+.date-fields {
+    display: flex;
+    gap: 15px;
+}
+
+.date-fields input {
+    flex: 1;
+    min-width: 0;
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+/* Полностью новые радио-кнопки */
+.gender-options {
+    display: flex;
+    gap: 25px;
+    margin: 15px 0;
+}
+
+.gender-options label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    margin-bottom: 0;
+    transition: color 0.2s;
+}
+
+input[type="radio"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #495057;
+    border-radius: 50%;
+    background: transparent;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+input[type="radio"]:checked {
+    border-color: #64ffda;
+}
+
+input[type="radio"]:checked::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #64ffda;
+}
+
+/* Новый дизайн мультиселекта */
+select[multiple] {
+    height: auto;
+    min-height: 120px;
+    background-image: none !important;
+}
+
+select[multiple] option {
+    padding: 10px;
+    margin: 3px 0;
+    background: rgba(0, 0, 0, 0.3);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+select[multiple] option:checked {
+    background: linear-gradient(45deg, #64ffda, #00b4d8);
+    color: #000;
+    font-weight: 500;
+}
+
+/* Совершенно новый чекбокс */
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #495057;
+    border-radius: 4px;
+    background: transparent;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+    margin-right: 10px;
+    vertical-align: middle;
+}
+
+input[type="checkbox"]:checked {
+    background: #64ffda;
+    border-color: #64ffda;
+}
+
+input[type="checkbox"]:checked::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #000;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+
+
+/* Кнопка - полностью новый дизайн */
+input[type="submit"] {
+    background: linear-gradient(45deg, #64ffda, #00b4d8);
+    color: #000;
+    border: none;
+    padding: 16px;
+    font-size: 1.1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: 600;
+    transition: all 0.3s;
+    margin-top: 20px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 15px rgba(0, 180, 216, 0.3);
+}
+
+input[type="submit"]:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 180, 216, 0.4);
+}
+
+/* Новый дизайн ошибок */
+.error {
+    border-color: #ff6b6b !important;
+    animation: shake 0.4s;
+}
+
+.error-message {
+    color: #ff6b6b;
+    font-size: 0.85rem;
+    margin-top: 5px;
+    margin-bottom: 15px;
+    display: inline-block;
+    padding: 5px 10px;
+    background: rgba(255, 107, 107, 0.1);
+    border-radius: 4px;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-5px); }
+    40%, 80% { transform: translateX(5px); }
+}
+
+/* Новые плейсхолдеры */
+::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}
+
+/* Адаптивность - новый подход */
+@media (max-width: 576px) {
+    form {
+        padding: 25px;
+    }
+    
+    .date-fields {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .gender-options {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+}
+
+/* Новые стили для сообщений */
+.messages {
+    position: fixed;
+    right: 30px;
+    top: 30px;
+    padding: 18px 25px;
+    background: rgba(0, 0, 0, 0.8);
+    border-radius: 12px;
+    border-left: 4px solid #64ffda;
+    font-size: 0.95rem;
+    color: #f8f9fa;
+    animation: slideIn 0.5s forwards;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    max-width: 300px;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.message {
+    margin: 8px 0;
+    line-height: 1.5;
+}
