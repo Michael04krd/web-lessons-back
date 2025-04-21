@@ -76,10 +76,3 @@
 </body>
 </html>
 
-<script> // Используем JS только для кнопки закрытия уведомления
-document.querySelectorAll('.close-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        this.parentElement.style.display = 'none';
-    });
-});
-</script>
