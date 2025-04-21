@@ -11,12 +11,11 @@
         <h1>ФОРМА</h1>
         <?php if (!empty($messages)): ?>
         <div class="messages">
-            <button class="close-btn" onclick="this.parentElement.style.display='none'">×</button>
             <?php foreach ($messages as $message): ?>
-        <div class="message"><?php echo $message; ?></div>
-        <?php endforeach; ?>
-    </div>
-    <?php endif; ?>
+                <div class="message"><?php echo $message; ?></div>
+            <?php endforeach; ?>
+        </div>
+        <?php endif; ?>
 
         <!-- Поле ФИО -->
         <label for="full_name">ФИО:</label>
@@ -75,4 +74,3 @@
     </form>
 </body>
 </html>
-
