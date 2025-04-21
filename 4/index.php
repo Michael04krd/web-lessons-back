@@ -209,11 +209,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   // Сохранение в БД
   try {
     $birth_date = sprintf("%04d-%02d-%02d", $year, $month, $day);
-    $stmt = $db->prepare("INSERT INTO applications (full_name, phone, email, birth_date, gender, biography, agreement) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt = $db->prepare("INSERT INTO application (full_name, phone, email, birth_date, gender, biography, agreement) VALUES (?, ?, ?, ?, ?, ?, ?)");
     $stmt->execute([$fio, $num, $email, $birth_date, $gen, $biography, $agreement]);
 
     $application_id = $db->lastInsertId();
-    $stmt_insert = $db->prepare("INSERT INTO application_languages (application_id, language_id) VALUES (?, ?)");
+    $stmt_insert = $db->prepare("INSERT INTO languages (application_id, language_id) VALUES (?, ?)");
     foreach ($languages as $language_id) {
         $stmt_insert->execute([$application_id, $language_id]);
     }
