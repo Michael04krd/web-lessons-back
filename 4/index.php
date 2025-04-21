@@ -9,7 +9,7 @@ $db = new PDO('mysql:host=localhost;dbname=u68608', $user, $pass,
 function getLangs($db){
   try{
     $allowed_lang=[];
-    $data = $db->query("SELECT id, name FROM programming_languages")->fetchAll();
+    $data = $db->query("SELECT id, name FROM languages")->fetchAll();
     foreach ($data as $lang) {
       $allowed_lang[$lang['id']] = $lang['name'];
     }
