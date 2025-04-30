@@ -47,18 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Вход в систему</title>
 </head>
 <body>
-    <div class="login-form">
-        <h1>Вход в систему</h1>
+    <div class="login-container">
+        <h1 class="login-title">Вход в систему</h1>
         
         <?php if (!empty($messages)): ?>
-            <div class="error-message">
-                <?php foreach ($messages as $message): ?>
-                    <p><?php echo $message; ?></p>
-                <?php endforeach; ?>
-            </div>
+        <div class="login-messages">
+            <?php foreach ($messages as $message): ?>
+                <div class="error-message"><?php echo htmlspecialchars($message); ?></div>
+            <?php endforeach; ?>
+        </div>
         <?php endif; ?>
         
-        <form method="POST">
+        <form class="login-form" method="POST">
             <div class="form-group">
                 <label for="login">Логин:</label>
                 <input type="text" id="login" name="login" required>
@@ -69,12 +69,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <input type="password" id="pass" name="pass" required>
             </div>
             
-            <div class="form-actions">
+            <div class="login-actions">
                 <input type="submit" value="Войти">
             </div>
         </form>
         
-        <p class="register-link">Нет аккаунта? <a href="index.php">Заполните форму</a></p>
+        <div class="register-link">
+            Нет аккаунта? <a href="index.php">Заполните форму регистрации</a>
+        </div>
     </div>
 </body>
 </html>
