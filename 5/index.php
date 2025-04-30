@@ -9,19 +9,6 @@ $db = new PDO('mysql:host=localhost;dbname=u68608', $user, $pass, [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
 ]);
 
-// Создаем таблицу users
-try {
-    $db->exec("CREATE TABLE IF NOT EXISTS users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        login VARCHAR(50) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        application_id INT NOT NULL,
-        FOREIGN KEY (application_id) REFERENCES application(id)
-    )");
-} catch (PDOException $e) {
-    die('Ошибка создания таблицы users: ' . $e->getMessage());
-}
-
 function getLangs($db) {
     try {
         $allowed_lang = [];
