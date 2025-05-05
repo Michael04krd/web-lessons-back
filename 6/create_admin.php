@@ -1,4 +1,5 @@
 <?php
+// Создаем админа для сервера
 $user = 'u68608';
 $pass = '1096993';
 $db = new PDO('mysql:host=localhost;dbname=u68608', $user, $pass, [
