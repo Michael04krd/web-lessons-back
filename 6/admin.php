@@ -2,6 +2,15 @@
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 
+// Обработка выхода
+if (isset($_GET['logout'])) {
+    // Отправляем заголовки, которые заставят браузер забыть авторизацию
+    header('HTTP/1.1 401 Unauthorized');
+    header('WWW-Authenticate: Basic realm="Admin Panel"');
+    header('Location: index.php');
+    exit();
+}
+
 // Проверка HTTP-авторизации
 if (!isset($_SERVER['PHP_AUTH_USER']) || !isset($_SERVER['PHP_AUTH_PW'])) {
     header('WWW-Authenticate: Basic realm="Admin Panel"');
