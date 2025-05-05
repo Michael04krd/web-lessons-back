@@ -22,6 +22,7 @@ if (!$admin || !password_verify($_SERVER['PHP_AUTH_PW'], $admin['password_hash']
 // Обработка выхода
 if (isset($_GET['logout'])) {
     header('HTTP/1.1 401 Unauthorized');
+    header('WWW-Authenticate: Basic realm="Admin Panel"');
     header('Location: index.php');
     exit;
 }
@@ -156,14 +157,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
     } catch (PDOException $e) {
         $db->rollBack();
         $messages[] = 'Ошибка при обновлении данных: ' . $e->getMessage();
-    }
-
-    if (isset($_GET['logout'])) {
-        // Сброс авторизации
-        header('HTTP/1.1 401 Unauthorized');
-        header('WWW-Authenticate: Basic realm="Admin Panel"');
-        header('Location: index.php');
-        exit;
     }
 }
 ?>
