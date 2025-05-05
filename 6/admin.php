@@ -1,29 +1,60 @@
 <?php
-// HTTP-авторизация
-if (!isset($_SERVER['PHP_AUTH_USER'])) {
-    header('WWW-Authenticate: Basic realm="Admin Panel"');
-    header('HTTP/1.0 401 Unauthorized');
-    exit('Требуется авторизация');
-}
-
+// Подключение БД
 $db = require 'db.php';
-
-// Проверка учетных данных
-$stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
-$stmt->execute([$_SERVER['PHP_AUTH_USER']]);
-$admin = $stmt->fetch();
-
-if (!$admin || !password_verify($_SERVER['PHP_AUTH_PW'], $admin['password_hash'])) {
-    header('WWW-Authenticate: Basic realm="Admin Panel"');
-    header('HTTP/1.0 401 Unauthorized');
-    exit('Неверные учетные данные');
-}
 
 // Обработка выхода
 if (isset($_GET['logout'])) {
     header('HTTP/1.1 401 Unauthorized');
     header('WWW-Authenticate: Basic realm="Admin Panel"');
     header('Location: index.php');
+    exit;
+}
+
+// Проверка авторизации
+$is_authenticated = false;
+$login = $_SERVER['PHP_AUTH_USER'] ?? $_POST['auth_login'] ?? '';
+$password = $_SERVER['PHP_AUTH_PW'] ?? $_POST['auth_pass'] ?? '';
+
+if ($login && $password) {
+    $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
+    $stmt->execute([$login]);
+    $admin = $stmt->fetch();
+    
+    $is_authenticated = ($admin && password_verify($password, $admin['password_hash']));
+}
+
+if (!$is_authenticated) {
+    header('WWW-Authenticate: Basic realm="Admin Panel"');
+    header('HTTP/1.0 401 Unauthorized');
+    
+    // HTML-форма для случаев, когда браузер не показывает диалог
+    echo <<<HTML
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Авторизация в админке</title>
+        <link rel="stylesheet" href="style.css">
+    </head>
+    <body>
+        <div class="login-container">
+            <h1>Авторизация администратора</h1>
+            <form method="POST" action="admin.php">
+                <div class="form-group">
+                    <label>Логин:</label>
+                    <input type="text" name="auth_login" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль:</label>
+                    <input type="password" name="auth_pass" required>
+                </div>
+                <div class="form-actions">
+                    <button type="submit">Войти</button>
+                </div>
+            </form>
+        </div>
+    </body>
+    </html>
+HTML;
     exit;
 }
 
