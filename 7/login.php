@@ -14,7 +14,7 @@ $db = require 'db.php';
 $messages = [];
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (!isset($_POST['csrf_token']) {
+    if (!isset($_POST['csrf_token'])) {
         die('CSRF token missing');
     }
     
