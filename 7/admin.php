@@ -6,10 +6,20 @@ header('X-Content-Type-Options: nosniff');
 
 $db = require 'db.php';
 
-// Проверка авторизации администратора
+// CSRF защита
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
+// Проверка авторизации
 $is_authenticated = false;
-$login = $_SERVER['PHP_AUTH_USER'] ?? $_POST['auth_login'] ?? '';
-$password = $_SERVER['PHP_AUTH_PW'] ?? $_POST['auth_pass'] ?? '';
+$login = $_SERVER['PHP_AUTH_USER'] ?? null;
+$password = $_SERVER['PHP_AUTH_PW'] ?? null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auth_login'])) {
+    $login = $_POST['auth_login'] ?? null;
+    $password = $_POST['auth_pass'] ?? null;
+}
 
 if ($login && $password) {
     try {
@@ -20,25 +30,26 @@ if ($login && $password) {
         $is_authenticated = ($admin && password_verify($password, $admin['password_hash']));
     } catch (PDOException $e) {
         error_log('Admin auth error: ' . $e->getMessage());
-        die('Ошибка авторизации');
     }
 }
 
 if (!$is_authenticated) {
-    header('WWW-Authenticate: Basic realm="Admin Panel"');
     header('HTTP/1.0 401 Unauthorized');
+    header('WWW-Authenticate: Basic realm="Admin Panel"');
     
+    // Форма для входа
     echo <<<HTML
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Авторизация в админке</title>
+        <title>Авторизация</title>
         <link rel="stylesheet" href="style.css">
     </head>
     <body>
         <div class="login-container">
             <h1>Авторизация администратора</h1>
             <form method="POST" action="admin.php">
+                <input type="hidden" name="csrf_token" value="{$_SESSION['csrf_token']}">
                 <div class="form-group">
                     <label>Логин:</label>
                     <input type="text" name="auth_login" required>
@@ -47,14 +58,18 @@ if (!$is_authenticated) {
                     <label>Пароль:</label>
                     <input type="password" name="auth_pass" required>
                 </div>
-                <div class="form-actions">
-                    <button type="submit">Войти</button>
-                </div>
+                <button type="submit">Войти</button>
             </form>
         </div>
     </body>
     </html>
 HTML;
+    exit;
+}
+
+// Обработка выхода
+if (isset($_GET['logout'])) {
+    header('Location: logout.php');
     exit;
 }
 
