@@ -138,7 +138,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Проверка CSRF токена
-    if (!isset($_POST['csrf_token']) {
+    if (!isset($_POST['csrf_token'])) {
         die('CSRF token missing');
     }
     
