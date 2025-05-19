@@ -5,41 +5,37 @@ header('Content-Type: text/html; charset=UTF-8');
 $db = require 'db.php';
 
 // Проверка авторизации администратора
-if (!isset($_SESSION['admin_logged_in'])) {
-    if (!isset($_SERVER['PHP_AUTH_USER'])) {
+$login = $_SERVER['PHP_AUTH_USER'] ?? null;
+$password = $_SERVER['PHP_AUTH_PW'] ?? null;
+
+if (!$login || !$password) {
+    header('WWW-Authenticate: Basic realm="Admin Panel"');
+    header('HTTP/1.0 401 Unauthorized');
+    echo 'Требуется авторизация';
+    exit;
+}
+
+try {
+    $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
+    $stmt->execute([$login]);
+    $admin = $stmt->fetch();
+    
+    if (!$admin || !password_verify($password, $admin['password_hash'])) {
         header('WWW-Authenticate: Basic realm="Admin Panel"');
         header('HTTP/1.0 401 Unauthorized');
-        echo 'Требуется авторизация';
+        echo 'Неверные учетные данные';
         exit;
     }
-
-    $login = $_SERVER['PHP_AUTH_USER'];
-    $password = $_SERVER['PHP_AUTH_PW'];
-
-    try {
-        $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
-        $stmt->execute([$login]);
-        $admin = $stmt->fetch();
-        
-        if (!$admin || !password_verify($password, $admin['password_hash'])) {
-            header('WWW-Authenticate: Basic realm="Admin Panel"');
-            header('HTTP/1.0 401 Unauthorized');
-            echo 'Неверные учетные данные';
-            exit;
-        }
-        
-        $_SESSION['admin_logged_in'] = true;
-    } catch (PDOException $e) {
-        die('Ошибка авторизации');
-    }
+} catch (PDOException $e) {
+    die('Ошибка авторизации');
 }
 
 // Обработка выхода
 if (isset($_GET['logout'])) {
-    unset($_SESSION['admin_logged_in']);
     header('Location: logout.php');
     exit;
 }
+
 
 // CSRF защита
 if (empty($_SESSION['csrf_token'])) {
