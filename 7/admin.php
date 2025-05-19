@@ -2,20 +2,25 @@
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 
-$db = require 'db.php';
+// Подключение к базе данных
+$db = new PDO('mysql:host=localhost;dbname=u68608', 'u68608', '1096993', [
+    PDO::ATTR_PERSISTENT => true,
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_EMULATE_PREPARES => false
+]);
 
-// Проверка авторизации (как было раньше)
+// Проверка HTTP Basic Auth
 if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header('WWW-Authenticate: Basic realm="Admin Panel"');
     header('HTTP/1.0 401 Unauthorized');
-    // Простая форма, если браузер не показал диалог
-    echo '<html><body><h1>Требуется авторизация</h1></body></html>';
+    echo '<!DOCTYPE html><html><head><title>Авторизация</title></head><body><h1>Требуется авторизация</h1></body></html>';
     exit;
 }
 
 $login = $_SERVER['PHP_AUTH_USER'];
 $password = $_SERVER['PHP_AUTH_PW'];
 
+// Проверка учетных данных
 try {
     $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
     $stmt->execute([$login]);
@@ -24,21 +29,18 @@ try {
     if (!$admin || !password_verify($password, $admin['password_hash'])) {
         header('WWW-Authenticate: Basic realm="Admin Panel"');
         header('HTTP/1.0 401 Unauthorized');
+        echo '<!DOCTYPE html><html><head><title>Ошибка</title></head><body><h1>Неверные учетные данные</h1></body></html>';
         exit;
     }
 } catch (PDOException $e) {
-    die('Ошибка авторизации');
+    die('<!DOCTYPE html><html><head><title>Ошибка</title></head><body><h1>Ошибка базы данных</h1></body></html>');
 }
-
-// [ВСТАВЬТЕ СЮДА ВЕСЬ ВАШ ОРИГИНАЛЬНЫЙ КОД АДМИН-ПАНЕЛИ]
-?>
 
 // Обработка выхода
 if (isset($_GET['logout'])) {
     header('Location: logout.php');
     exit;
 }
-
 
 // CSRF защита
 if (empty($_SESSION['csrf_token'])) {
@@ -52,14 +54,15 @@ $id = (int)($_GET['id'] ?? 0);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!isset($_POST['csrf_token'])) {
-        die('CSRF token missing');
+        die('Отсутствует CSRF токен');
     }
     
     if (!hash_equals($_SESSION['csrf_token'], $_POST['csrf_token'])) {
-        die('Invalid CSRF token');
+        die('Неверный CSRF токен');
     }
 }
 
+// Удаление заявки
 if ($action === 'delete' && $id > 0) {
     try {
         $db->beginTransaction();
@@ -197,12 +200,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Административная панель</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="admin.css">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background-color: #f2f2f2; }
+        .logout-btn { display: inline-block; padding: 8px 16px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; }
+        .logout-btn:hover { background: #c82333; }
+        .action-btn { display: inline-block; padding: 4px 8px; margin: 2px; text-decoration: none; border-radius: 3px; }
+        .edit-btn { background: #28a745; color: white; }
+        .delete-btn { background: #dc3545; color: white; }
+        .messages { margin: 10px 0; padding: 10px; background: #f8f9fa; border: 1px solid #ddd; }
+        .message { margin: 5px 0; }
+        .edit-form { margin-top: 20px; padding: 20px; background: #f8f9fa; border: 1px solid #ddd; }
+        .edit-form label { display: block; margin-top: 10px; }
+        .edit-form input, .edit-form select, .edit-form textarea { width: 100%; padding: 8px; margin-top: 5px; }
+        .edit-form select[multiple] { height: auto; min-height: 100px; }
+        .form-actions { margin-top: 15px; }
+        .save-btn { padding: 8px 16px; background: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        .cancel-btn { padding: 8px 16px; background: #6c757d; color: white; text-decoration: none; border-radius: 4px; display: inline-block; margin-left: 10px; }
+    </style>
 </head>
 <body>
-    <div class="admin-container">
-        <div class="admin-header">
+    <div style="max-width: 1200px; margin: 0 auto;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
             <h1>Административная панель</h1>
             <a href="admin.php?logout=1" class="logout-btn">Выйти</a>
         </div>
@@ -215,7 +236,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
         </div>
         <?php endif; ?>
         
-        <div class="stats-container">
+        <div style="background: #f8f9fa; padding: 20px; margin-bottom: 30px;">
             <h2>Статистика по языкам программирования</h2>
             <table class="stats-table">
                 <thead>
