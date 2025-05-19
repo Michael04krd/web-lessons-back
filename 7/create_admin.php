@@ -1,20 +1,12 @@
 <?php
-session_start();
 require_once 'db.php';
-
-// Удаляем защиту HTTP Basic Auth (она не нужна для этого скрипта)
-// И добавляем проверку, что скрипт вызывается напрямую
-if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !empty($_POST)) {
-    die('Доступ запрещён');
-}
-
 $db = require 'db.php';
 
 $login = 'admin';
-$password = 'admin123'; // Измените на свой пароль!
+$password = 'admin123'; 
 
-// Проверяем, существует ли уже администратор
 try {
+    // Проверяем существование администратора
     $stmt = $db->prepare("SELECT id FROM admins WHERE login = ?");
     $stmt->execute([$login]);
     
@@ -22,7 +14,7 @@ try {
         die('Администратор уже существует');
     }
 
-    // Создаём хеш пароля
+    // Создаем хеш пароля
     $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
     // Добавляем администратора
@@ -35,6 +27,6 @@ try {
     echo '<a href="admin.php">Перейти в админку</a>';
 } catch (PDOException $e) {
     error_log('Create admin error: ' . $e->getMessage());
-    die("Ошибка: Не удалось создать администратора. Проверьте логи ошибок.");
+    die("Ошибка: Не удалось создать администратора");
 }
 ?>
