@@ -2,7 +2,7 @@
 $db = require 'db.php';
 
 $login = 'admin';
-$password = 'admin123'; 
+$password = 'admin123'; // Поменяйте на свой пароль!
 
 try {
     // Проверяем существование администратора
