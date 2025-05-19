@@ -1,5 +1,4 @@
 <?php
-require_once 'db.php';
 $db = require 'db.php';
 
 $login = 'admin';
@@ -26,7 +25,6 @@ try {
     echo "Пароль: $password<br>";
     echo '<a href="admin.php">Перейти в админку</a>';
 } catch (PDOException $e) {
-    error_log('Create admin error: ' . $e->getMessage());
     die("Ошибка: Не удалось создать администратора");
 }
 ?>
