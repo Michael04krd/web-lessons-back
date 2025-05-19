@@ -2,7 +2,7 @@
 session_start();
 
 // Уничтожаем сессию
-$_SESSION = [];
+$_SESSION = array();
 if (ini_get("session.use_cookies")) {
     $params = session_get_cookie_params();
     setcookie(session_name(), '', time() - 42000,
@@ -16,7 +16,7 @@ session_destroy();
 header('HTTP/1.1 401 Unauthorized');
 header('WWW-Authenticate: Basic realm="Logged Out"');
 
-// Перенаправляем
-header('Refresh: 0; url=index.php');
+// Перенаправляем на главную
+header('Location: index.php');
 exit;
 ?>
