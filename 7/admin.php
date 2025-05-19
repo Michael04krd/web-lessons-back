@@ -226,7 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
     <div class="admin-container">
         <div class="admin-header">
             <h1>Административная панель</h1>
-            <a href="admin.php?logout=1" class="logout-btn">Выйти</a>
+            <a href="logout.php?admin=1" class="logout-btn">Выйти</a>
         </div>
         
         <?php if (!empty($messages)): ?>
