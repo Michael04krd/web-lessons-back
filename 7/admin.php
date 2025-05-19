@@ -2,42 +2,14 @@
 session_start();
 header('Content-Type: text/html; charset=UTF-8');
 header('X-Frame-Options: DENY');
-header('X-Content-Type-Options: nosniff');
 
 $db = require 'db.php';
 
-// CSRF защита
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
-// Проверка авторизации
-$is_authenticated = false;
-$login = $_SERVER['PHP_AUTH_USER'] ?? null;
-$password = $_SERVER['PHP_AUTH_PW'] ?? null;
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['auth_login'])) {
-    $login = $_POST['auth_login'] ?? null;
-    $password = $_POST['auth_pass'] ?? null;
-}
-
-if ($login && $password) {
-    try {
-        $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
-        $stmt->execute([$login]);
-        $admin = $stmt->fetch();
-        
-        $is_authenticated = ($admin && password_verify($password, $admin['password_hash']));
-    } catch (PDOException $e) {
-        error_log('Admin auth error: ' . $e->getMessage());
-    }
-}
-
-if (!$is_authenticated) {
-    header('HTTP/1.0 401 Unauthorized');
+// Проверка авторизации администратора
+if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header('WWW-Authenticate: Basic realm="Admin Panel"');
-    
-    // Форма для входа
+    header('HTTP/1.0 401 Unauthorized');
+    // HTML форма для случаев, когда браузер не показывает диалог
     echo <<<HTML
     <!DOCTYPE html>
     <html>
@@ -47,24 +19,32 @@ if (!$is_authenticated) {
     </head>
     <body>
         <div class="login-container">
-            <h1>Авторизация администратора</h1>
-            <form method="POST" action="admin.php">
-                <input type="hidden" name="csrf_token" value="{$_SESSION['csrf_token']}">
-                <div class="form-group">
-                    <label>Логин:</label>
-                    <input type="text" name="auth_login" required>
-                </div>
-                <div class="form-group">
-                    <label>Пароль:</label>
-                    <input type="password" name="auth_pass" required>
-                </div>
-                <button type="submit">Войти</button>
-            </form>
+            <h1>Требуется авторизация</h1>
+            <p>Ваш браузер не показал диалог авторизации.</p>
+            <p>Пожалуйста, включите JavaScript или обновите страницу.</p>
         </div>
     </body>
     </html>
 HTML;
     exit;
+}
+
+$login = $_SERVER['PHP_AUTH_USER'];
+$password = $_SERVER['PHP_AUTH_PW'];
+
+try {
+    $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
+    $stmt->execute([$login]);
+    $admin = $stmt->fetch();
+    
+    if (!$admin || !password_verify($password, $admin['password_hash'])) {
+        header('WWW-Authenticate: Basic realm="Admin Panel"');
+        header('HTTP/1.0 401 Unauthorized');
+        echo 'Неверные учетные данные';
+        exit;
+    }
+} catch (PDOException $e) {
+    die('Ошибка авторизации');
 }
 
 // Обработка выхода
@@ -110,7 +90,6 @@ if ($action === 'delete' && $id > 0) {
         $messages[] = 'Данные успешно удалены';
     } catch (PDOException $e) {
         $db->rollBack();
-        error_log('Delete error: ' . $e->getMessage());
         $messages[] = 'Ошибка при удалении данных';
     }
 }
@@ -148,7 +127,6 @@ try {
     ");
     $language_stats = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log('Database error: ' . $e->getMessage());
     die('Ошибка получения данных');
 }
 
@@ -168,7 +146,7 @@ if ($action === 'edit' && $id > 0) {
         
         if ($edit_data) {
             $stmt = $db->prepare("
-                SELECT l.id, l.name 
+                SELECT l.id 
                 FROM application_languages al
                 JOIN languages l ON al.language_id = l.id
                 WHERE al.application_id = ?
@@ -177,7 +155,6 @@ if ($action === 'edit' && $id > 0) {
             $edit_data['languages'] = $stmt->fetchAll(PDO::FETCH_COLUMN, 0);
         }
     } catch (PDOException $e) {
-        error_log('Edit data error: ' . $e->getMessage());
         $messages[] = 'Ошибка получения данных для редактирования';
     }
 }
@@ -223,7 +200,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
         exit();
     } catch (PDOException $e) {
         $db->rollBack();
-        error_log('Update error: ' . $e->getMessage());
         $messages[] = 'Ошибка при обновлении данных';
     }
 }
@@ -241,7 +217,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_edit'])) {
     <div class="admin-container">
         <div class="admin-header">
             <h1>Административная панель</h1>
-            <a href="logout.php?admin=1" class="logout-btn">Выйти</a>
+            <a href="admin.php?logout=1" class="logout-btn">Выйти</a>
         </div>
         
         <?php if (!empty($messages)): ?>
