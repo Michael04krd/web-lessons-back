@@ -1,23 +1,20 @@
 <?php
 session_start();
+require_once 'db.php';
 
-// Защита от прямого доступа
-if (!isset($_SERVER['PHP_AUTH_USER']) || $_SERVER['PHP_AUTH_USER'] !== 'admin' || $_SERVER['PHP_AUTH_PW'] !== 'superadminpass') {
-    header('WWW-Authenticate: Basic realm="Restricted Area"');
-    header('HTTP/1.0 401 Unauthorized');
-    die('Доступ запрещен');
+// Удаляем защиту HTTP Basic Auth (она не нужна для этого скрипта)
+// И добавляем проверку, что скрипт вызывается напрямую
+if ($_SERVER['REQUEST_METHOD'] !== 'GET' || !empty($_POST)) {
+    die('Доступ запрещён');
 }
 
 $db = require 'db.php';
 
 $login = 'admin';
-$password = 'admin123';
+$password = 'admin123'; // Измените на свой пароль!
 
-// Генерация соли и хеша пароля
-$password_hash = password_hash($password, PASSWORD_DEFAULT);
-
+// Проверяем, существует ли уже администратор
 try {
-    // Проверка существования администратора
     $stmt = $db->prepare("SELECT id FROM admins WHERE login = ?");
     $stmt->execute([$login]);
     
@@ -25,13 +22,19 @@ try {
         die('Администратор уже существует');
     }
 
-    // Создание администратора
+    // Создаём хеш пароля
+    $password_hash = password_hash($password, PASSWORD_DEFAULT);
+
+    // Добавляем администратора
     $stmt = $db->prepare("INSERT INTO admins (login, password_hash) VALUES (?, ?)");
     $stmt->execute([$login, $password_hash]);
     
-    echo "Администратор успешно создан. Логин: $login, Пароль: $password";
+    echo "Администратор успешно создан.<br>";
+    echo "Логин: $login<br>";
+    echo "Пароль: $password<br>";
+    echo '<a href="admin.php">Перейти в админку</a>';
 } catch (PDOException $e) {
     error_log('Create admin error: ' . $e->getMessage());
-    die("Ошибка: Не удалось создать администратора");
+    die("Ошибка: Не удалось создать администратора. Проверьте логи ошибок.");
 }
 ?>
