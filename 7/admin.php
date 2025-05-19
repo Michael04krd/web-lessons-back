@@ -4,16 +4,17 @@ header('Content-Type: text/html; charset=UTF-8');
 
 $db = require 'db.php';
 
-// Проверка авторизации администратора
-$login = $_SERVER['PHP_AUTH_USER'] ?? null;
-$password = $_SERVER['PHP_AUTH_PW'] ?? null;
-
-if (!$login || !$password) {
+// Проверка авторизации (как было раньше)
+if (!isset($_SERVER['PHP_AUTH_USER'])) {
     header('WWW-Authenticate: Basic realm="Admin Panel"');
     header('HTTP/1.0 401 Unauthorized');
-    echo 'Требуется авторизация';
+    // Простая форма, если браузер не показал диалог
+    echo '<html><body><h1>Требуется авторизация</h1></body></html>';
     exit;
 }
+
+$login = $_SERVER['PHP_AUTH_USER'];
+$password = $_SERVER['PHP_AUTH_PW'];
 
 try {
     $stmt = $db->prepare("SELECT password_hash FROM admins WHERE login = ?");
@@ -23,12 +24,14 @@ try {
     if (!$admin || !password_verify($password, $admin['password_hash'])) {
         header('WWW-Authenticate: Basic realm="Admin Panel"');
         header('HTTP/1.0 401 Unauthorized');
-        echo 'Неверные учетные данные';
         exit;
     }
 } catch (PDOException $e) {
     die('Ошибка авторизации');
 }
+
+// [ВСТАВЬТЕ СЮДА ВЕСЬ ВАШ ОРИГИНАЛЬНЫЙ КОД АДМИН-ПАНЕЛИ]
+?>
 
 // Обработка выхода
 if (isset($_GET['logout'])) {
