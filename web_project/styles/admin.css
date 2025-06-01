@@ -1,0 +1,194 @@
+body {
+    background-color: #1a1a2e;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    margin: 0;
+    padding: 30px;
+    color: #f8f9fa;
+    line-height: 1.6;
+    background-image: radial-gradient(circle at 25% 25%, #2a2a3a 0%, #1a1a2e 100%);
+}
+
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin-bottom: 40px;
+    background-color: #2a2a3a;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+table:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+}
+
+thead tr {
+    background: linear-gradient(135deg, #3a0ca3 0%, #4361ee 100%);
+    box-shadow: 0 4px 12px rgba(63, 97, 238, 0.3);
+}
+
+thead td {
+    padding: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    position: relative;
+}
+
+thead td:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 20%;
+    height: 60%;
+    width: 1px;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+tbody td {
+    padding: 14px;
+    text-align: center;
+    color: #e0e0e0;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:nth-child(even) {
+    background-color: rgba(40, 40, 60, 0.5);
+}
+
+tbody tr:hover td {
+    background-color: rgba(67, 97, 238, 0.1);
+    color: #fff;
+}
+
+.delete_button {
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 80px;
+}
+
+.delete_button:hover {
+    background: linear-gradient(135deg, #d90429 0%, #ef233c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(239, 35, 60, 0.3);
+}
+
+.change_button a {
+    display: inline-block;
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 8px 16px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    min-width: 80px;
+}
+
+.change_button a:hover {
+    background: linear-gradient(135deg, #4cc9f0 0%, #4895ef 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(76, 201, 240, 0.3);
+}
+
+.admin-logout {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    gap: 8px;
+}
+
+.admin-logout:hover {
+    background: linear-gradient(135deg, #f72585 0%, #b5179e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(247, 37, 133, 0.3);
+}
+
+.admin-logout::before {
+    content: "←";
+    font-size: 16px;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Дополнительные улучшения */
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    color: #fff;
+    margin-bottom: 30px;
+    font-weight: 600;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+h1::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(90deg, #4361ee 0%, transparent 100%);
+    border-radius: 3px;
+}
+
+/* Анимация загрузки строк */
+tbody tr {
+    animation: fadeIn 0.4s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+/* Последовательная анимация для строк */
+tbody tr:nth-child(1) { animation-delay: 0.1s; }
+tbody tr:nth-child(2) { animation-delay: 0.2s; }
+tbody tr:nth-child(3) { animation-delay: 0.3s; }
+tbody tr:nth-child(4) { animation-delay: 0.4s; }
+/* и так далее... */
