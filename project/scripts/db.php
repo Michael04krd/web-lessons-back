@@ -8,7 +8,7 @@ function db_connect() {
     if ($db !== null) return $db;
 
     $user = 'u68608';
-    $pass = '1099369';
+    $pass = '1096993';
     $dsn = 'mysql:host=localhost;dbname=u68608;charset=utf8mb4';
 
     try {
