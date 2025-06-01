@@ -5,7 +5,7 @@ function auth(&$request, $r) {
     $db = db_connect();
     
     $users = [];
-    $stmt = $db->query("SELECT login, password FROM admins UNION SELECT login, password FROM users");
+    $stmt = $db->query("SELECT login, password_hash FROM admins UNION SELECT login, password FROM users");
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $users[$row['login']] = $row['password'];
     }
