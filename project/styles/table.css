@@ -1,0 +1,83 @@
+body {
+ background-color: #1e1e2f;
+ font-family: 'Segoe UI', sans-serif;
+ margin: 20px;
+ color: #fff;
+}
+
+table {
+ width: 100%;
+ border-collapse: collapse;
+ margin-bottom: 40px;
+ background-color: #2c2c3e;
+ border-radius: 10px;
+ overflow: hidden;
+ box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+thead tr {
+ background-color: #161625;
+}
+
+thead td {
+ padding: 14px;
+ font-weight: bold;
+ color: #ff4b5c;
+ text-align: center;
+ text-transform: uppercase;
+ font-size: 13px;
+}
+
+tbody td {
+ padding: 12px;
+ text-align: center;
+ color: #e0e0e0;
+ border-top: 1px solid #444;
+ font-size: 14px;
+}
+
+tbody tr:nth-child(even) {
+ background-color: #26263a;
+}
+
+tbody tr:hover {
+ background-color: #3a3a56;
+}
+
+.delete_button {
+ background-color: #ff4b5c;
+ color: white;
+ border: none;
+ padding: 6px 14px;
+ border-radius: 6px;
+ cursor: pointer;
+ font-size: 13px;
+ transition: background-color 0.3s ease;
+}
+
+.delete_button:hover {
+ background-color: #e03d4f;
+}
+
+.change_button a {
+ display: inline-block;
+ background-color: #6d4bff;
+ color: white;
+ padding: 6px 14px;
+ border-radius: 6px;
+ text-decoration: none;
+ font-size: 13px;
+ margin-top: 6px;
+ transition: background-color 0.3s ease;
+}
+
+.change_button a:hover {
+ background-color: #5c40d8;
+}
+
+.buttons {
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ gap: 4px;
+}
