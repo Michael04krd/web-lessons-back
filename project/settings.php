@@ -13,7 +13,7 @@ $conf = array(
   'date_format' => 'Y.m.d',
   'date_format_2' => 'Y.m.d H:i',
   'date_format_3' => 'd.m.Y',
-  'basedir' => '/web-lessons-back.github.io/project/',
+  'basedir' => '/web-lessons-back/project/',
   'login' => 'admin',
   'password' => '123',
 );
